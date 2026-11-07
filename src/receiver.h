@@ -34,6 +34,15 @@ constexpr uint16_t kPid8812cu = 0xc812;
 constexpr uint16_t kPid8812eu = 0xa81a; // RTL8812EU (RTL8822E): runs the 8822C code unchanged (notes/cu-custom-code.md)
 // The Jaguar3 adapters (8822C, 8822E): the 8822C LA dialect, loader, streamer and gain map throughout.
 inline bool jaguar3_pid(uint16_t pid) { return pid == kPid8812cu || pid == kPid8812eu; }
+// The adapter (kPid8812bu / kPid8812cu / kPid8812eu) a USB id is, 0 if none of ours: Realtek's own ids,
+// and boards that carry one of the chips under their maker's id (devourer tells the chip by register).
+inline uint16_t model_pid(uint16_t vid, uint16_t pid) {
+  if (vid == 0x0bda)
+    return pid == kPid8812bu || jaguar3_pid(pid) ? pid : 0;
+  if (vid == 0x2357 && pid == 0x0115) // TP-Link Archer T4U v3 (RTL8812BU)
+    return kPid8812bu;
+  return 0;
+}
 
 struct RxSettings {
   double freq = 5180e6; // requested centre
@@ -100,6 +109,7 @@ public:
 
   // Blocking (~5 s bring-up). Throws OpenError (not found / permission / busy) or runtime_error.
   // bus/port pick one of several identical adapters (port path as "1" or "1.2"; -1/"" = any).
+  // pid: the adapter (kPid8812bu, ...); a board under another USB id that is one (model_pid) opens too.
   void open(uint16_t pid, const RxSettings &initial = {}, int bus = -1, const std::string &port = {});
   void close(); // stop + release the adapter
   bool is_open() const { return _open; }

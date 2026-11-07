@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 #include "session.h"
+#include "receiver.h" // model_pid
 
 #include <stdexcept>
 
@@ -39,7 +40,8 @@ void Session::open(const OpenOpts &o) {
     int rc = LIBUSB_ERROR_NOT_FOUND;
     for (ssize_t i = 0; i < n && rc == LIBUSB_ERROR_NOT_FOUND; i++) {
       libusb_device_descriptor d{};
-      if (libusb_get_device_descriptor(list[i], &d) != 0 || d.idVendor != o.vid || d.idProduct != o.pid)
+      if (libusb_get_device_descriptor(list[i], &d) != 0 ||
+          (o.any_board ? model_pid(d.idVendor, d.idProduct) != o.pid : d.idVendor != o.vid || d.idProduct != o.pid))
         continue;
       if (o.bus >= 0 && libusb_get_bus_number(list[i]) != o.bus)
         continue;

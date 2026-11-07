@@ -7,3 +7,5 @@
 SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="b812", TAG+="uaccess", MODE="0660", GROUP="plugdev"
 SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="c812", TAG+="uaccess", MODE="0660", GROUP="plugdev"
 SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="a81a", TAG+="uaccess", MODE="0660", GROUP="plugdev"
+# TP-Link Archer T4U v3: an 8812BU under TP-Link's id
+SUBSYSTEM=="usb", ATTRS{idVendor}=="2357", ATTRS{idProduct}=="0115", TAG+="uaccess", MODE="0660", GROUP="plugdev"

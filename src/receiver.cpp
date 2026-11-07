@@ -80,6 +80,7 @@ void Receiver::open(uint16_t pid, const RxSettings &initial, int bus, const std:
   const bool cu = jaguar3_pid(pid); // 8812CU and 8812EU: the 8822C path throughout
   OpenOpts o;
   o.pid = pid;
+  o.any_board = true;
   o.bus = bus;
   o.port = port;
   o.bw = cu && !initial.allow_gapped ? 20 : width_of(initial, cu); // 8812CU at 40 MS/s only gapped

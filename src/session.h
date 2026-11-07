@@ -19,6 +19,7 @@ namespace wsdr {
 struct OpenOpts {
   uint16_t vid = 0x0bda;
   uint16_t pid = 0;   // required
+  bool any_board = false; // pid is an adapter (model_pid, receiver.h): any USB id that is one (vid unused)
   int bus = -1;       // optional: only the adapter on this USB bus ...
   std::string port;   // ... and port path ("1", "1.2"); empty = any
   int channel = 36;
