@@ -67,7 +67,7 @@ void Receiver::set_state(RxState s, const std::string &err) {
     _st.error = err;
 }
 
-void Receiver::open(uint16_t pid, const RxSettings &initial, int bus, const std::string &port) {
+void Receiver::open(uint16_t pid, const RxSettings &initial, int bus, const std::string &port, int sys_fd) {
   close();
   if (initial.rate_sel < 0 || initial.rate_sel > 5)
     throw std::invalid_argument("rate_sel must be 0..5");
@@ -83,6 +83,9 @@ void Receiver::open(uint16_t pid, const RxSettings &initial, int bus, const std:
   o.any_board = true;
   o.bus = bus;
   o.port = port;
+  o.sys_fd = sys_fd;
+  if (sys_fd >= 0)
+    o.reset = false; // a USB reset can re-enumerate the device and invalidate the granted fd
   o.bw = cu && !initial.allow_gapped ? 20 : width_of(initial, cu); // 8812CU at 40 MS/s only gapped
   o.channel = channel_for(initial.freq, o.bw);
   o.thermal_track = false; // no host register traffic while streaming
